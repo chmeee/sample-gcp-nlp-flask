@@ -86,10 +86,10 @@ class Text(Resource):
 
         # Get the sentiment score of the first sentence of the analysis (that's the [0] part)
         sentiment = 0
-	for s in analyze_text_sentiment(text):
-	    sentiment += s.get("sentiment score")
+        for s in analyze_text_sentiment(text):
+            sentiment += s.get("sentiment score")
 
-	sentiment /= len(sentiment)
+        sentiment /= len(sentiment)
 
         # Assign a label based on the score
         overall_sentiment = "unknown"
@@ -176,6 +176,14 @@ def analyze_text_sentiment(text):
         sentence_sentiment.append(item)
 
     return sentence_sentiment
+
+
+def analyze_text_entities(text):
+
+
+
+def analyze_text_topics(text):
+
 
 
 if __name__ == "__main__":
