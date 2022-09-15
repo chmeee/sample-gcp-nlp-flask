@@ -86,10 +86,11 @@ class Text(Resource):
 
         # Get the sentiment score of the first sentence of the analysis (that's the [0] part)
         sentiment = 0
-        for s in analyze_text_sentiment(text):
+        sentiment_list = analyze_text_sentiment(text)
+        for s in sentiment_list:
             sentiment += s.get("sentiment score")
 
-        sentiment /= len(sentiment)
+        sentiment /= len(sentiment_list)
 
         # Assign a label based on the score
         overall_sentiment = "unknown"
@@ -177,12 +178,19 @@ def analyze_text_sentiment(text):
 
     return sentence_sentiment
 
+
 # https://cloud.google.com/natural-language/docs/analyzing-entities
 def analyze_text_entities(text):
     client = language.LanguageServiceClient()
     document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
 
     response = client.analyze_entities(document=document)
+
+    entities = []
+    for entity in response.entities:
+        entities.append(entity.name)
+
+    return entities
 
 
 # https://cloud.google.com/natural-language/docs/classifying-text#classifying_content_2
@@ -192,7 +200,11 @@ def analyze_text_topics(text):
 
     response = client.clasify_text(document=document)
     
-    
+    topics = []
+    for topic in response.categories:
+        topics.append(topic.name)
+
+    return topics
 
 
 if __name__ == "__main__":
