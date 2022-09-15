@@ -85,7 +85,6 @@ class Text(Resource):
         args = parser.parse_args()
         text = args["text"]
 
-
         # Get the sentiment score of the first sentence of the analysis (that's the [0] part)
         sentiment = 0
         sentiment_list = analyze_text_sentiment(text)
@@ -103,6 +102,9 @@ class Text(Resource):
         if sentiment == 0:
             overall_sentiment = "neutral"
 
+        entities = analyze_text_entities(text)
+        topics = analyze_text_topics(text)
+
         current_datetime = datetime.now()
 
         # The kind for the new entity. This is so all 'Sentences' can be queried.
@@ -110,6 +112,7 @@ class Text(Resource):
 
         # Create a key to store into datastore
         key = datastore_client.key(kind)
+
         # If a key id is not specified then datastore will automatically generate one. For example, if we had:
         # key = datastore_client.key(kind, 'sample_task')
         # instead of the above, then 'sample_task' would be the key id used.
@@ -119,6 +122,8 @@ class Text(Resource):
         entity["text"] = text[0:1499]
         entity["timestamp"] = current_datetime
         entity["sentiment"] = overall_sentiment
+        entity["entities"] = entities
+        entity["topics"] = topics
 
         # Save the new entity to Datastore.
         datastore_client.put(entity)
@@ -128,6 +133,8 @@ class Text(Resource):
             "text": text,
             "timestamp": str(current_datetime),
             "sentiment": overall_sentiment,
+            "entities": entities,
+            "topics": topics,
         }
         return result
 
@@ -153,7 +160,7 @@ def analyze_text_sentiment(text):
     It makes a call to the Google NLP API to retrieve sentiment analysis.
     """
     client = language.LanguageServiceClient()
-    document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
+    document = language.Document(content=text, type_=language.Document.Type.HTML)
 
     response = client.analyze_sentiment(document=document)
 
@@ -200,7 +207,7 @@ def analyze_text_topics(text):
     client = language.LanguageServiceClient()
     document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
 
-    response = client.clasify_text(document=document)
+    response = client.classify_text(document=document)
     
     topics = []
     for topic in response.categories:
