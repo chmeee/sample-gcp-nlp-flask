@@ -73,6 +73,7 @@ class Text(Resource):
 
         return result
 
+
     @api.expect(parser)
     def post(self):
         """
@@ -83,6 +84,7 @@ class Text(Resource):
 
         args = parser.parse_args()
         text = args["text"]
+
 
         # Get the sentiment score of the first sentence of the analysis (that's the [0] part)
         sentiment = 0
@@ -114,7 +116,7 @@ class Text(Resource):
 
         # Construct the new entity using the key. Set dictionary values for entity
         entity = datastore.Entity(key)
-        entity["text"] = text
+        entity["text"] = text[0:1499]
         entity["timestamp"] = current_datetime
         entity["sentiment"] = overall_sentiment
 
