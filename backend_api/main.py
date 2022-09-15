@@ -179,11 +179,20 @@ def analyze_text_sentiment(text):
 
 
 def analyze_text_entities(text):
+    client = language.LanguageServiceClient()
+    document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
+
+    response = client.analyze_entities(document=document)
 
 
 
 def analyze_text_topics(text):
+    client = language.LanguageServiceClient()
+    document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
 
+    response = client.clasify_text(document=document)
+    
+    
 
 
 if __name__ == "__main__":
