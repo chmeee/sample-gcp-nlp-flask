@@ -177,7 +177,7 @@ def analyze_text_sentiment(text):
 
     return sentence_sentiment
 
-
+# https://cloud.google.com/natural-language/docs/analyzing-entities
 def analyze_text_entities(text):
     client = language.LanguageServiceClient()
     document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
@@ -185,7 +185,7 @@ def analyze_text_entities(text):
     response = client.analyze_entities(document=document)
 
 
-
+# https://cloud.google.com/natural-language/docs/classifying-text#classifying_content_2
 def analyze_text_topics(text):
     client = language.LanguageServiceClient()
     document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
