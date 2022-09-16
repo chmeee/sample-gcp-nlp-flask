@@ -48,6 +48,8 @@ api = Api(app)
 parser = api.parser()
 parser.add_argument("text", type=str, help="Text", location="form")
 
+# Read ESG topics
+esg_topics = [line.strip('\n') for line in open('ESG_Keywords.txt', 'r')]
 
 @api.route("/api/text")
 class Text(Resource):
@@ -69,6 +71,8 @@ class Text(Resource):
                 "text": str(text_entity["text"]),
                 "timestamp": str(text_entity["timestamp"]),
                 "sentiment": str(text_entity["sentiment"]),
+                "entities": text_entity["entities"],
+                "topics": text_entity["topics"],
             }
 
         return result
@@ -104,6 +108,10 @@ class Text(Resource):
 
         entities = analyze_text_entities(text)
         topics = analyze_text_topics(text)
+        # topics = []
+        # for topic in all_topics:
+        #     if topic in esg_topics:
+        #         topics.append(topic)
 
         current_datetime = datetime.now()
 
@@ -119,7 +127,7 @@ class Text(Resource):
 
         # Construct the new entity using the key. Set dictionary values for entity
         entity = datastore.Entity(key)
-        entity["text"] = text[0:1499]
+        entity["text"] = text[0:1399]
         entity["timestamp"] = current_datetime
         entity["sentiment"] = overall_sentiment
         entity["entities"] = entities
